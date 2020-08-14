@@ -26,5 +26,8 @@
     <ClInclude Include="tgaimage.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="vec3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

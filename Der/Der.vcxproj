@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tgaimage.h" />
+    <ClInclude Include="vec3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F5084014-DB3D-4D6B-8B5A-30746B6AA923}</ProjectGuid>
