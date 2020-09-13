@@ -415,35 +415,37 @@ void barycentric_triangle(point3 &A, point3 &B, point3 &C, TGAImage &image, vec3
 
 
 	double f_alpha = (B.y() - C.y())*A.x() + (C.x() - B.x())*A.y() + B.x()*C.y() - C.x()*B.y();
-	//double f_beta = (C.y() - A.y())*B.x() + (A.x() - C.x())*B.y() + C.x()*A.y() - A.x()*C.y();
-	double f_beta = (A.y() - C.y())*B.x() + (C.x() - A.x())*B.y() + A.x()*C.y() - C.x()*A.y();
+	double f_beta = (C.y() - A.y())*B.x() + (A.x() - C.x())*B.y() + C.x()*A.y() - A.x()*C.y();
+	//double f_beta = (A.y() - C.y())*B.x() + (C.x() - A.x())*B.y() + A.x()*C.y() - C.x()*A.y();
 	double f_gamma = (A.y() - B.y())*C.x() + (B.x() - A.x())*C.y() + A.x()*B.y() - B.x()*A.y();
 
 
 	double f12= (B.y() - C.y())*(-1) + (C.x() - B.x())*(-1) + B.x()*C.y() - C.x()*B.y();
-	//double f20= (C.y() - A.y())*(-1) + (A.x() - C.x())*(-1) + C.x()*A.y() - A.x()*C.y();
-	double f20 = (A.y() - C.y())*(-1) + (C.x() - A.x())*(-1) + A.x()*C.y() - C.x()*A.y();
+	double f20= (C.y() - A.y())*(-1) + (A.x() - C.x())*(-1) + C.x()*A.y() - A.x()*C.y();
+	//double f20 = (A.y() - C.y())*(-1) + (C.x() - A.x())*(-1) + A.x()*C.y() - C.x()*A.y();
 	double f01= (A.y() - B.y())*(-1) + (B.x() - A.x())*(-1) + A.x()*B.y() - B.x()*A.y();
 
 	for (double y = y_min; y <= y_max; y++) {
 		
 		for (double x = x_min; x <= x_max; x++) {
-			double alpha= (B.y() - C.y())*x + (C.x() - B.x())*y + B.x()*C.y() - C.x()*B.y();
-			//double beta = (C.y() - A.y())*x + (A.x() - C.x())*y + C.x()*A.y() - A.x()*C.y();
-			double beta = (A.y() - C.y())*x + (C.x() - A.x())*y + A.x()*C.y() - C.x()*A.y();
+			double alpha = ((B.y() - C.y())*x + (C.x() - B.x())*y + B.x()*C.y() - C.x()*B.y()) / f_alpha;
+			double beta = ((C.y() - A.y())*x + (A.x() - C.x())*y + C.x()*A.y() - A.x()*C.y()) / f_beta;
+			//double beta = (A.y() - C.y())*x + (C.x() - A.x())*y + A.x()*C.y() - C.x()*A.y();
 
-			double gamma= (A.y() - B.y())*x + (B.x() - A.x())*y + A.x()*B.y() - B.x()*A.y();
+			double gamma = ((A.y() - B.y())*x + (B.x() - A.x())*y + A.x()*B.y() - B.x()*A.y()) / f_gamma;
 
 
 			if (alpha >= 0 && beta >= 0 && gamma >= 0) {
-				std::cout << 1 << std::endl;
 
+				
+				
 				if ((alpha>0||f_alpha*f12>0)&&(beta>0||f_beta*f20>0)&&(gamma>0||f_gamma*f01>0)) {
 					//计算颜色插值
 
 					tempcolor = alpha*colorA + beta*colorB + gamma*colorC;
 					TGAColor lastcolor = TGAColor(tempcolor.x(), tempcolor.y(), tempcolor.z(), 255);
 					image.set(x, y, lastcolor);
+					//std::cout << tempcolor.y() << std::endl;
 
 				}
 			}
@@ -453,10 +455,10 @@ void barycentric_triangle(point3 &A, point3 &B, point3 &C, TGAImage &image, vec3
 
 int main(int argc, char** argv) {
 
-	TGAImage image(1000, 1000, TGAImage::RGB);
+	TGAImage image(500, 500, TGAImage::RGB);
 	
-	midpointLine(0, 0, 1000, 1000, image, red);
-	barycentric_triangle(point3(0, 0, 0), point3(10, 10, 0), point3(20, 0, 0), image, vec3(255, 0, 0), vec3(255, 0, 0), vec3(255, 0, 0));
+	barycentric_triangle(point3(10, 10, 0), point3(100, 100, 0), point3(200, 10, 0), image, vec3(255, 0, 0), vec3(0, 255, 0), vec3(0, 0, 255));
+	barycentric_triangle(point3(200, 10, 0), point3(100, 100, 0), point3(300, 20, 0), image, vec3(0, 255, 0), vec3(0, 255, 0), vec3(0, 255, 0));
 
 	image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
 	image.write_tga_file("output.tga");
